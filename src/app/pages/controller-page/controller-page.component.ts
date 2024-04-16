@@ -13,6 +13,10 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
 })
+/**
+ * TODO:
+ * let controller delete/mark which item is done, pending, delete items.
+ */
 export class ControllerPageComponent implements OnInit, OnDestroy {
   enteredValue: string = '';
 
