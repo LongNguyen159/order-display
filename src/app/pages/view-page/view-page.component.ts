@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PageService } from '../service/page.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-view-page',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './view-page.component.html',
   styleUrl: './view-page.component.scss'
 })

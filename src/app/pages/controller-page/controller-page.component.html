@@ -1,4 +1,4 @@
-<div>
-    <input type="text" [(ngModel)]="enteredValue" (keyup.enter)="saveValue()">
-    <button (click)="saveValue()">Save</button>
+<div class="controller">
+    <textarea type="text" style="height: 50px; width: 50%;" [(ngModel)]="enteredValue"></textarea>
+    <button mat-flat-button color="primary" (click)="saveValue()">Save</button>
 </div>

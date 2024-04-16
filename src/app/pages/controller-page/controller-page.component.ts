@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { PageService } from '../service/page.service';
-
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-controller-page',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    MatButtonModule
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -23,9 +24,18 @@ export class ControllerPageComponent implements OnInit, OnDestroy {
   }
 
   saveValue() {
+    // if (this.enteredValue.trim() !== '') {
+    //   localStorage.setItem('enteredValue', this.enteredValue.trim());
+    //   this.pageService.setValue(this.enteredValue.trim())
+    //   this.enteredValue = ''; // Clear the input field
+    // }
+
     if (this.enteredValue.trim() !== '') {
-      localStorage.setItem('enteredValue', this.enteredValue.trim());
+      const existingValue = localStorage.getItem('enteredValue') || '';
+      const newValue = this.enteredValue.trim();
+      const updatedValue = existingValue ? `${existingValue}\n${newValue}` : newValue;
       this.pageService.setValue(this.enteredValue.trim())
+      localStorage.setItem('enteredValue', updatedValue);
       this.enteredValue = ''; // Clear the input field
     }
   }

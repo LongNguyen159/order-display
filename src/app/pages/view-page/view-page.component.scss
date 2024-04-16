@@ -1,0 +1,35 @@
+.viewPanel {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    // height: 100vh;
+}
+
+// .grid-container {
+//     display: grid;
+//     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust column width as needed */
+//     grid-gap: 10px; /* Adjust gap between grid items */
+// }
+  
+// .grid-item {
+//     border: 1px solid #ccc; /* Add border for grid items */
+//     padding: 10px; /* Add padding for grid items */
+// }
+
+.grid-container {
+    column-count: 2; /* Set the initial number of columns */
+    column-gap: 20px; /* Adjust the gap between columns */
+    width: 100%;
+    max-height: 73vh;
+  }
+  
+  .grid-item {
+    break-inside: avoid; /* Prevent grid items from breaking inside columns */
+    border: 1px solid #ccc; /* Add border for grid items */
+    padding: 10px; /* Add padding for grid items */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

@@ -1,4 +1,6 @@
-<div>
-    <h2>Value from Controller Page:</h2>
-    <p>{{ savedValue }}</p>
+<div class="viewPanel">
+    <h1>Upcoming:</h1>
+    <div class="grid-container">
+      <div *ngFor="let value of savedValue.split('\n')" class="grid-item">{{ value }}</div>
+    </div>
 </div>
