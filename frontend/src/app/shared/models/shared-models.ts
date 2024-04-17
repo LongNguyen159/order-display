@@ -9,4 +9,10 @@ export interface Order {
     location_id: number;
     done: boolean;
     location_description: string;
-  }
+}
+
+export interface NewOrder {
+  order_number: string
+  location_id: number
+  done: boolean
+}

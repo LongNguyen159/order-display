@@ -6,11 +6,17 @@ from fastapi import FastAPI, Depends, HTTPException
 
 # Create Order
 def create_order(db: Session, order: schemas.OrderCreate):
+    location_description = db.query(models.Location.description).filter(models.Location.id == order.location_id).scalar()
+    if location_description is None:
+        raise HTTPException(status_code=404, detail="Location not found")
+
     db_order = models.Order(**order.dict())
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
-    return db_order
+
+    return {**db_order.__dict__, 'location_description': location_description}
+
 
 # Get all Locations
 def get_all_locations(db: Session) -> List[schemas.Location]:
