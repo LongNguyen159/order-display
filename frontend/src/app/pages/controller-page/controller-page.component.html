@@ -1,4 +1,15 @@
-<div class="controller">
-    <textarea type="text" style="height: 50px; width: 50%;" [(ngModel)]="enteredValue"></textarea>
+<mat-toolbar>
+    <div class="flex flex-row items-center justify-center" (click)="navigateToHome()">
+        <button mat-button>
+            <mat-icon>
+                arrow_back
+            </mat-icon>
+            <span>Home</span>
+        </button>
+    </div>
+    
+</mat-toolbar>
+<!-- <div class="controller">
+    <input matInput type="text" style="height: 50px; width: 50%;" [(ngModel)]="enteredValue">
     <button mat-flat-button color="primary" (click)="saveValue()">Save</button>
-</div>
+</div> -->

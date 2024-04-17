@@ -3,12 +3,19 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { PageService } from '../service/page.service';
 import { MatButtonModule } from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatIconModule} from '@angular/material/icon';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-controller-page',
   standalone: true,
   imports: [
     FormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatInputModule,
+    MatToolbarModule,
+    MatIconModule,
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -22,7 +29,9 @@ export class ControllerPageComponent implements OnInit, OnDestroy {
 
   valueSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  constructor(private pageService: PageService) {}
+  constructor(private pageService: PageService,
+    private router: Router
+  ) {}
   ngOnInit(): void {
     
   }
@@ -36,6 +45,10 @@ export class ControllerPageComponent implements OnInit, OnDestroy {
       this.pageService.setValue(this.enteredValue.trim())
       this.enteredValue = ''; // Clear the input field
     }
+  }
+
+  navigateToHome() {
+    this.router.navigate(['/home'])
   }
 
   ngOnDestroy(): void {
