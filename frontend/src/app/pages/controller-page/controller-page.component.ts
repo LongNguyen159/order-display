@@ -189,6 +189,20 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
       }
     })
   }
+
+  onClearLocation(event: Event, locationId: number) {
+    event.stopPropagation()
+    console.log('clear location id:', locationId)
+    this.sharedService.removeLocation(locationId).pipe(take(1)).subscribe({
+      next: (value: any) => {
+        this.updateDatasource()
+        this.sharedService.openSnackbar('Section removed from database!')
+      },
+      error: (err: HttpErrorResponse) => {
+        this.sharedService.openSnackbar('Error removing section, please try again')
+      }
+    })
+  }
   
 
   isOrderNumberEmpty(): boolean {

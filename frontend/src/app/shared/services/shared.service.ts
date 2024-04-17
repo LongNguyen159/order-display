@@ -39,6 +39,10 @@ export class SharedService {
     return this.http.post(`${this._apiEndpoint}/locations/`, postData)
   }
 
+  removeLocation(id: number) {
+    return this.http.delete(`${this._apiEndpoint}/locations/${id}`)
+  }
+
 
   addOrder(order: NewOrder): Observable<Order> {
     return this.http.post<Order>(`${this._apiEndpoint}/orders/`, order)
