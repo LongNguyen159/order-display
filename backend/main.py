@@ -1,5 +1,6 @@
 from typing import Union, List, Optional
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import models, schemas, crud
 from database import SessionLocal, engine
@@ -17,6 +18,15 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 # Get all Locations
 @app.get("/locations/", response_model=List[schemas.Location])
