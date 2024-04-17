@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 /**
  * TODO:
- * let controller delete/mark which item is done, pending, delete items.
+ * Display entered values, let user delete displayed values here.
  */
 export class ControllerPageComponent implements OnInit, OnDestroy {
   enteredValue: string = '';
@@ -28,18 +28,12 @@ export class ControllerPageComponent implements OnInit, OnDestroy {
   }
 
   saveValue() {
-    // if (this.enteredValue.trim() !== '') {
-    //   localStorage.setItem('enteredValue', this.enteredValue.trim());
-    //   this.pageService.setValue(this.enteredValue.trim())
-    //   this.enteredValue = ''; // Clear the input field
-    // }
-
     if (this.enteredValue.trim() !== '') {
       const existingValue = localStorage.getItem('enteredValue') || '';
       const newValue = this.enteredValue.trim();
       const updatedValue = existingValue ? `${existingValue}\n${newValue}` : newValue;
-      this.pageService.setValue(this.enteredValue.trim())
       localStorage.setItem('enteredValue', updatedValue);
+      this.pageService.setValue(this.enteredValue.trim())
       this.enteredValue = ''; // Clear the input field
     }
   }

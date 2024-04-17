@@ -21,9 +21,11 @@ export class ViewPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.pageService.getValue().pipe(takeUntil(this.onDestroy$)).subscribe(value => {
       this.savedValue = localStorage.getItem('enteredValue') || '';
+      console.log(this.savedValue)
     })
 
     window.addEventListener('storage', (event) => {
+      console.log(event)
       if (event.key === 'enteredValue') {
         this.savedValue = event.newValue || '';
       }
