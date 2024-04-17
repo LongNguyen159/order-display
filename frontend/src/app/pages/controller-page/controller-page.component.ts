@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, take, takeUntil } from 'rxjs';
 import { PageService } from '../service/page.service';
@@ -18,7 +18,9 @@ import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent, DialogData } from '../../shared/components/dialog/dialog.component';
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+
 
 @Component({
   selector: 'app-controller-page',
@@ -35,6 +37,7 @@ import { DialogComponent, DialogData } from '../../shared/components/dialog/dial
     MatCheckboxModule,
     CommonModule,
     MatOptionModule,    
+    MatPaginatorModule,
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -44,7 +47,7 @@ import { DialogComponent, DialogData } from '../../shared/components/dialog/dial
  * Display entered values, let user delete displayed values here.
  */
 export class ControllerPageComponent extends BaseComponent implements OnInit {
-
+  @ViewChild('paginator') paginator: MatPaginator
   displayedColumns: string[] = ['order_number', 'location_id', 'done', 'actions']
 
   allOrders: Order[] = []
@@ -80,23 +83,13 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     this.getAllLocations() 
   }
 
-  // saveValue() {
-  //   if (this.enteredValue.trim() !== '') {
-  //     const existingValue = localStorage.getItem('enteredValue') || '';
-  //     const newValue = this.enteredValue.trim();
-  //     const updatedValue = existingValue ? `${existingValue}\n${newValue}` : newValue;
-  //     localStorage.setItem('enteredValue', updatedValue);
-  //     this.pageService.setValue(this.enteredValue.trim())
-  //     this.enteredValue = '';
-  //   }
-  // }
-
 
   getAllOrders() {
     this.sharedService.getAllOrders().pipe(takeUntil(this.componentDestroyed$)).subscribe(allOrders => {
       this.allOrders = allOrders
 
       this.dataSource = new MatTableDataSource(allOrders)
+      this.dataSource.paginator = this.paginator
       this.updateDatasource()
     })
   }
@@ -111,10 +104,12 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   updateDatasource() {
     this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
       this.dataSource.data = allOrders
+      this.dataSource.paginator = this.paginator
     })
 
     this.sharedService.getAllLocations().pipe(take(1)).subscribe(allLocations => {
       this.locations = allLocations
+      this.dataSource.paginator = this.paginator
     })
   }
 
