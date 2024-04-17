@@ -55,7 +55,7 @@ def update_order(db: Session, order_id: int, done: bool):
     if db_order:
         db_order.done = done
         db.commit()
-        return db_order
+        return db_order.done
     else:
         raise HTTPException(status_code=404, detail="Order not found")
 

@@ -24,7 +24,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
 )
 
@@ -54,7 +54,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     return crud.create_order(db=db, order=order)
 
 # Patch Order endpoint
-@app.patch("/orders/{order_id}/", response_model=schemas.Order)
+@app.patch("/orders/{order_id}/", response_model=bool)
 def update_order(order_id: int, done: bool, db: Session = Depends(get_db)):
     return crud.update_order(db=db, order_id=order_id, done=done)
 

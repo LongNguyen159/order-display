@@ -48,7 +48,15 @@ export class SharedService {
     return this.http.post<Order>(`${this._apiEndpoint}/orders/`, order)
   }
 
-  removeOrder(id: string) {
+  updateOrderDone(id: number, done: boolean): Observable<boolean> {
+    const url = `${this._apiEndpoint}/orders/${id}/?done=${done}`;
+    return this.http.patch<boolean>(url, {}, {})
+  }
+
+  /** Remove when user click on column 'Picked up'.
+   * Because when customers have picked up their orders, then delete them from database makes sense.
+   */
+  removeOrder(id: number) {
     return this.http.delete(`${this._apiEndpoint}/orders/${id}`)
   }
 

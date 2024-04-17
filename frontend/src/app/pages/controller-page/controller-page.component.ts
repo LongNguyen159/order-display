@@ -13,7 +13,7 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { Location, NewOrder, Order } from '../../shared/models/shared-models';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -49,6 +49,8 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
   allOrders: Order[] = []
   locations: Location[] = []
+
+  updatingDoneStatus: boolean = false /** Boolean flag true when server are patching 'done' value */
 
 
 
@@ -135,7 +137,8 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     })
   }
 
-  onEnter(): void {
+  /** Enter order number */
+  onEnterOrderNumber(): void {
     if (this.isOrderNumberEmpty()) {
       this.sharedService.openSnackbar('Order number cannot be empty!', 'top');
     }
@@ -149,15 +152,36 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     }
   }
 
-  onDeleteOrder(event: Event, orderId: string) {
+  onDeleteOrder(event: Event, order: Order) {
     event.stopPropagation()
+    const orderId = order.id
+    const orderNumber = order.order_number
     this.sharedService.removeOrder(orderId).pipe(take(1)).subscribe({
       next: (value: any) => {
-        this.sharedService.openSnackbar(`Order ${orderId} has been picked up!`)
+        this.sharedService.openSnackbar(`Order ${orderNumber} has been picked up!`)
         this.updateDatasource()
       },
       error: (err: HttpErrorResponse) => {
-        this.sharedService.openSnackbar(`Error removing ${orderId}, please try again`)
+        this.sharedService.openSnackbar(`Error removing ${orderNumber}, please try again`)
+        this.updateDatasource()
+      }
+    })
+  }
+
+
+  onDoneChange(option: MatCheckboxChange, order: Order) {
+    console.log(option)
+    const checked = option.checked
+    const id = option.source.value
+
+    this.sharedService.updateOrderDone(parseInt(id), checked).pipe(take(1)).subscribe({
+      next: (value: any) => {
+        this.sharedService.openSnackbar(`Order ${order.order_number} updated!`)
+        this.updateDatasource()
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error(err)
+        this.sharedService.openSnackbar(`Error updating order ${order.order_number}, please try again`)
         this.updateDatasource()
       }
     })
