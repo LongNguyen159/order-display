@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { NewOrder, Order } from '../models/shared-models';
+import { Location, NewOrder, Order } from '../models/shared-models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -19,6 +19,10 @@ export class SharedService {
 
   getAllOrders() {
     return this.http.get<Order[]>(`${this._apiEndpoint}/orders/`)
+  }
+
+  getAllLocations() {
+    return this.http.get<Location[]>(`${this._apiEndpoint}/locations/`)
   }
 
 

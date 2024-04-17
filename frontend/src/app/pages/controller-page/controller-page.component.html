@@ -23,7 +23,9 @@
             
             <mat-form-field>
               <mat-label>Location ID</mat-label>
-              <input matInput type="number" [(ngModel)]="locationId" name="locationId" required>
+              <mat-select [(ngModel)]="locationId" name="locationId" required>
+                <mat-option *ngFor="let location of locations" [value]="location.id">{{ location.id }} - {{ location.description }}</mat-option>
+              </mat-select>
             </mat-form-field>
             
             <mat-checkbox [(ngModel)]="done" name="done">Done</mat-checkbox>

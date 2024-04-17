@@ -10,10 +10,12 @@ import { Router } from '@angular/router';
 import { SharedService } from '../../shared/services/shared.service';
 import { BaseComponent } from '../../shared/components/base/base.component';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import { NewOrder, Order } from '../../shared/models/shared-models';
+import { Location, NewOrder, Order } from '../../shared/models/shared-models';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { CommonModule } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
 
 
 @Component({
@@ -28,7 +30,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatTableModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    CommonModule,
+    MatOptionModule
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -38,15 +42,22 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
  * Display entered values, let user delete displayed values here.
  */
 export class ControllerPageComponent extends BaseComponent implements OnInit {
-  orders: Order[];
+
   displayedColumns: string[] = ['order_number', 'location_id', 'done', 'actions']
 
   allOrders: Order[] = []
+  locations: Location[] = []
+
+
+
   enteredValue: string = ''
 
+
+  /** Table Data */
   dataSource: MatTableDataSource<Order>
 
 
+  /** Form section */
   orderNumber: string
   locationId: number
   done: boolean = false
@@ -60,12 +71,8 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   }
   // @ts-ignore
   ngOnInit(): void {
-    this.sharedService.getAllOrders().pipe(takeUntil(this.componentDestroyed$)).subscribe(allOrders => {
-      this.allOrders = allOrders
-
-      this.dataSource = new MatTableDataSource(allOrders)
-      this.updateDatasource()
-    })
+    this.getAllOrders()
+    this.getAllLocations() 
   }
 
   // saveValue() {
@@ -78,6 +85,23 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   //     this.enteredValue = '';
   //   }
   // }
+
+
+  getAllOrders() {
+    this.sharedService.getAllOrders().pipe(takeUntil(this.componentDestroyed$)).subscribe(allOrders => {
+      this.allOrders = allOrders
+
+      this.dataSource = new MatTableDataSource(allOrders)
+      this.updateDatasource()
+    })
+  }
+
+  getAllLocations() {
+    this.sharedService.getAllLocations().pipe(takeUntil(this.componentDestroyed$)).subscribe(locations => {
+      this.locations = locations
+    })
+  }
+
 
   updateDatasource() {
     this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
