@@ -24,6 +24,7 @@ class OrderCreate(OrderBase):
 
 class Order(OrderBase):
     id: int
+    location_description: str
 
     class Config:
         orm_mode = True

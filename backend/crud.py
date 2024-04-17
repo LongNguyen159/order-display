@@ -26,15 +26,21 @@ def get_location(db: Session, location_id: int) -> schemas.Location:
 
 # Get all Orders
 def get_all_orders(db: Session) -> List[schemas.Order]:
-     return db.query(models.Order).order_by(models.Order.id.desc()).all()
+    orders = db.query(models.Order, models.Location.description).join(models.Location).order_by(models.Order.id.desc()).all()
+    return [{"id": order.id, "order_number": order.order_number, "location_id": order.location_id, "done": order.done, "location_description": description} for order, description in orders]
 
-# Get Order by ID
+
 def get_order(db: Session, order_id: int) -> Optional[schemas.Order]:
-    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    order, description = db.query(models.Order, models.Location.description).join(models.Location).filter(models.Order.id == order_id).first()
     if order is None:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
-        
+    return schemas.Order(
+        id=order.id,
+        order_number=order.order_number,
+        location_id=order.location_id,
+        done=order.done,
+        location_description=description
+    )
 
 
 # Patch Order
