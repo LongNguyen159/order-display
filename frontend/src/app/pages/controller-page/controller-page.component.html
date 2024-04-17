@@ -18,7 +18,7 @@
         <form (ngSubmit)="onSubmit()" class="flex flex-row justify-center align-center gap-10 py-6">
             <mat-form-field>
               <mat-label>Order Number</mat-label>
-              <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" required>
+              <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" (keyup.enter)="onEnter()">
             </mat-form-field>
             
             <mat-form-field>
@@ -30,7 +30,7 @@
             
             <mat-checkbox [(ngModel)]="done" name="done">Done</mat-checkbox>
             
-            <button mat-raised-button color="primary" type="submit" [disabled]="isOrderNumberEmpty()">Enter</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="isOrderNumberEmpty() || isLocationEmpty()">Enter</button>
         </form>
     </div>
     <div>

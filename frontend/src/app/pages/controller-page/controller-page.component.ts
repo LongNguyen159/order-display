@@ -129,8 +129,25 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     })
   }
 
+  onEnter(): void {
+    if (this.isOrderNumberEmpty()) {
+      this.sharedService.openSnackbar('Order number cannot be empty!', 'top');
+    }
+    if (!this.locationId) {
+      this.sharedService.openSnackbar('Location cannot be empty!', 'top');
+    }
+
+    if (!this.isOrderNumberEmpty && this.locationId) {
+      this.onSubmit();
+    }
+  }
+
   isOrderNumberEmpty(): boolean {
     return !this.orderNumber || /^\s*$/.test(this.orderNumber)
+  }
+
+  isLocationEmpty(): boolean {
+    return this.locationId == undefined || this.locationId == null
   }
 
   navigateToHome() {

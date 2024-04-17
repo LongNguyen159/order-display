@@ -8,6 +8,7 @@ import {
   MatSnackBarActions,
   MatSnackBarLabel,
   MatSnackBarRef,
+  MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,9 @@ export class SharedService {
     return this.http.post<Order>(`${this._apiEndpoint}/orders/`, order)
   }
 
-  openSnackbar(message: string) {
-    this.snackbar.open(message, 'Dismiss')
+  openSnackbar(message: string, position = 'bottom') {
+    this.snackbar.open(message, 'Dismiss', {
+      verticalPosition: position as MatSnackBarVerticalPosition
+    })
   }
 }
