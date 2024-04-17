@@ -17,7 +17,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent, DialogData } from '../../shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-controller-page',
@@ -67,6 +68,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   constructor(private pageService: PageService,
     private router: Router,
     private sharedService: SharedService,
+    private dialog: MatDialog
   ) {
     super()
   }
@@ -108,6 +110,10 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
       this.dataSource.data = allOrders
     })
+
+    this.sharedService.getAllLocations().pipe(take(1)).subscribe(allLocations => {
+      this.locations = allLocations
+    })
   }
 
   onSubmit(): void {
@@ -138,9 +144,52 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     }
 
     if (!this.isOrderNumberEmpty && this.locationId) {
-      this.onSubmit();
+      this.onSubmit()
+      return
     }
   }
+
+  onDeleteOrder(event: Event, orderId: string) {
+    event.stopPropagation()
+    this.sharedService.removeOrder(orderId).pipe(take(1)).subscribe({
+      next: (value: any) => {
+        this.sharedService.openSnackbar(`Order ${orderId} has been picked up!`)
+        this.updateDatasource()
+      },
+      error: (err: HttpErrorResponse) => {
+        this.sharedService.openSnackbar(`Error removing ${orderId}, please try again`)
+        this.updateDatasource()
+      }
+    })
+  }
+
+  onCreateLocation() {
+    this.promptForDescription()
+  }
+
+  promptForDescription(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '40%',
+    })
+
+    dialogRef.afterClosed().subscribe((locationInput: string) => {
+      /** call service to create here */
+      if (locationInput) {
+        this.sharedService.createLocation(locationInput).pipe(take(1)).subscribe({
+          next: (value: any) => {
+            this.updateDatasource()
+            this.sharedService.openSnackbar('New section added!')
+          },
+          error: (err: HttpErrorResponse) => {
+            this.sharedService.openSnackbar('Error adding section, please try again')
+          }
+        })
+      } else {
+        return
+      }
+    })
+  }
+  
 
   isOrderNumberEmpty(): boolean {
     return !this.orderNumber || /^\s*$/.test(this.orderNumber)

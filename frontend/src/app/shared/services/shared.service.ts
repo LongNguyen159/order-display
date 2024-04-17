@@ -32,14 +32,26 @@ export class SharedService {
     return this.http.get<Location[]>(`${this._apiEndpoint}/locations/`)
   }
 
+  createLocation(description: string) {
+    const postData =  {
+      description: description
+    }
+    return this.http.post(`${this._apiEndpoint}/locations/`, postData)
+  }
+
 
   addOrder(order: NewOrder): Observable<Order> {
     return this.http.post<Order>(`${this._apiEndpoint}/orders/`, order)
   }
 
+  removeOrder(id: string) {
+    return this.http.delete(`${this._apiEndpoint}/orders/${id}`)
+  }
+
   openSnackbar(message: string, position = 'bottom') {
     this.snackbar.open(message, 'Dismiss', {
-      verticalPosition: position as MatSnackBarVerticalPosition
+      verticalPosition: position as MatSnackBarVerticalPosition,
+      duration: 2500
     })
   }
 }
