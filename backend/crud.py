@@ -14,7 +14,7 @@ def create_order(db: Session, order: schemas.OrderCreate):
 
 # Get all Locations
 def get_all_locations(db: Session) -> List[schemas.Location]:
-    return db.query(models.Location).all()
+    return db.query(models.Location).order_by(models.Location.id.desc()).all()
 
 # Get Location by ID
 def get_location(db: Session, location_id: int) -> schemas.Location:
@@ -26,7 +26,7 @@ def get_location(db: Session, location_id: int) -> schemas.Location:
 
 # Get all Orders
 def get_all_orders(db: Session) -> List[schemas.Order]:
-    return db.query(models.Order).all()
+     return db.query(models.Order).order_by(models.Order.id.desc()).all()
 
 # Get Order by ID
 def get_order(db: Session, order_id: int) -> Optional[schemas.Order]:
