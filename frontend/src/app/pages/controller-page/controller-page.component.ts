@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { PageService } from '../service/page.service';
@@ -9,6 +9,9 @@ import {MatIconModule} from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { SharedService } from '../../shared/services/shared.service';
 import { BaseComponent } from '../../shared/components/base/base.component';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { Order } from '../../shared/models/shared-models';
+
 @Component({
   selector: 'app-controller-page',
   standalone: true,
@@ -18,6 +21,7 @@ import { BaseComponent } from '../../shared/components/base/base.component';
     MatInputModule,
     MatToolbarModule,
     MatIconModule,
+    MatTableModule
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -26,10 +30,15 @@ import { BaseComponent } from '../../shared/components/base/base.component';
  * TODO:
  * Display entered values, let user delete displayed values here.
  */
-export class ControllerPageComponent extends BaseComponent implements OnInit, OnDestroy {
-  enteredValue: string = '';
+export class ControllerPageComponent extends BaseComponent implements OnInit {
+  orders: Order[];
+  displayedColumns: string[] = ['order_number', 'location_id', 'done', 'actions']
 
-  valueSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  allOrders: Order[] = []
+  enteredValue: string = ''
+
+  dataSource: MatTableDataSource<Order>
+  
 
   constructor(private pageService: PageService,
     private router: Router,
@@ -41,6 +50,9 @@ export class ControllerPageComponent extends BaseComponent implements OnInit, On
   ngOnInit(): void {
     this.sharedService.getAllOrders().pipe(takeUntil(this.componentDestroyed$)).subscribe(allOrders => {
       console.log(allOrders)
+      this.allOrders = allOrders
+
+      this.dataSource = new MatTableDataSource(this.allOrders)
     })
   }
 
@@ -51,7 +63,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit, On
       const updatedValue = existingValue ? `${existingValue}\n${newValue}` : newValue;
       localStorage.setItem('enteredValue', updatedValue);
       this.pageService.setValue(this.enteredValue.trim())
-      this.enteredValue = ''; // Clear the input field
+      this.enteredValue = '';
     }
   }
 

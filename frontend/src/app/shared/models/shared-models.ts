@@ -8,4 +8,5 @@ export interface Order {
     order_number: string;
     location_id: number;
     done: boolean;
-}
+    location_description: string;
+  }
