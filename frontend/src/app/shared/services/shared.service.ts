@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Location, NewOrder, Order } from '../models/shared-models';
 import { Observable } from 'rxjs';
-
+import {
+  MatSnackBar,
+  MatSnackBarAction,
+  MatSnackBarActions,
+  MatSnackBarLabel,
+  MatSnackBarRef,
+} from '@angular/material/snack-bar';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +20,7 @@ export class SharedService {
   private _apiEndpoint: string = `http://127.0.0.1:8000`
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
 
 
   getAllOrders() {
@@ -28,5 +34,9 @@ export class SharedService {
 
   addOrder(order: NewOrder): Observable<Order> {
     return this.http.post<Order>(`${this._apiEndpoint}/orders/`, order)
+  }
+
+  openSnackbar(message: string) {
+    this.snackbar.open(message, 'Dismiss')
   }
 }

@@ -16,6 +16,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -32,7 +33,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatSelectModule,
     MatCheckboxModule,
     CommonModule,
-    MatOptionModule
+    MatOptionModule,    
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -65,7 +66,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
   constructor(private pageService: PageService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
   ) {
     super()
   }
@@ -116,21 +117,20 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
       done: this.done
     }
 
-    this.sharedService.addOrder(newOrder).subscribe((order: Order) => {
-      // Reset form fields after successful submission
-      
-
-      if (order) {
+    this.sharedService.addOrder(newOrder).subscribe({
+      next: (value: Order) => {
         this.updateDatasource()
         this.orderNumber = ''
+        this.sharedService.openSnackbar('Order added successfully!')
+      },
+      error: (err: HttpErrorResponse) => {
+        this.sharedService.openSnackbar('Error adding order, please try again')
       }
-      
-      
     })
   }
 
   isOrderNumberEmpty(): boolean {
-    return !this.orderNumber || /^\s*$/.test(this.orderNumber);
+    return !this.orderNumber || /^\s*$/.test(this.orderNumber)
   }
 
   navigateToHome() {
