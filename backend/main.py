@@ -10,6 +10,10 @@ from fastapi import FastAPI
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
+### Todo: DEPLOYMENT:
+# Run command `uvicorn main:app --host=longs-macbook.local --reload` to start the app, BUT:
+# Change the hostname `longs-macbook.local` to the hostname of the computer which acts as server later.
+# GOAL: make server accessible within the same network.
 
 # Dependency to get the database session
 def get_db():

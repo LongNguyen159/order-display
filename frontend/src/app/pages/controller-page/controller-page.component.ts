@@ -44,7 +44,10 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 })
 /**
  * TODO:
- * Display entered values, let user delete displayed values here.
+ * - Display values in View page
+ * - Add Date column to database
+ * - Implement clear all records button
+ * 
  */
 export class ControllerPageComponent extends BaseComponent implements OnInit {
   @ViewChild('paginator') paginator: MatPaginator

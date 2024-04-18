@@ -69,10 +69,6 @@
               "buildTarget": "order-display:build:development"
             }
           },
-          "options": {
-            "host": "longs-macbook.local",
-            "port": 4200
-          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
