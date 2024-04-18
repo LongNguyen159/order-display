@@ -18,6 +18,7 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 change_detect = False
+connected_clients: list[WebSocket] = []
 
 ## RUN ON LOCALHOST ALWAYS AS A SERVER
 # Dependency to get the database session
@@ -40,20 +41,30 @@ app.add_middleware(
 @app.websocket("/ws")
 async def websocketEndpoint(websocket: WebSocket):
     await websocket.accept()
+    connected_clients.append(websocket)
+    print(connected_clients)
     global change_detect
-    while True:
-        try:
-            if change_detect == True:
-                await websocket.send_text('Order table has changed')
-                change_detect = False
-            else:
-                await asyncio.sleep(1)
-        except WebSocketDisconnect:
-            print('disconnected')
-            break
+    try:
+        
+        while websocket in connected_clients:
+            try:
+                if change_detect:
+                    for client in connected_clients:
+                        await client.send_text('Order has changed')
+                        
+                    change_detect = False
+                else:
+                    await asyncio.sleep(0.1)
+            except WebSocketDisconnect:
+                print('disconnect')
+                if websocket in connected_clients:
+                    connected_clients.remove(websocket)
+    finally:
+        connected_clients.remove(websocket)
+            
 
 def track_status_changes(mapper, connection, target):
-        db = next(get_db())    
+        db = next(get_db())
         order_datasource = crud.get_all_orders(db=db)
         on_change_detected()
         

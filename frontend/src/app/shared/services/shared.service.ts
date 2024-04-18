@@ -69,7 +69,7 @@ export class SharedService {
   }
 
   closeWebsocket() {
-    this._ws.close()
+    // this._ws.close()
   }
 
 
