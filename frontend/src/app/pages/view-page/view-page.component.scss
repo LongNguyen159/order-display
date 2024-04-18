@@ -33,3 +33,25 @@
     justify-content: center;
     align-items: center;
   }
+
+.processingOrders {
+  color: rgb(35,35,35);
+  background-color: #ececec;
+  height: 100%;
+}
+
+.processingOrdersHeader {
+  background-color: grey;
+  color: white;
+}
+
+
+
+.doneOrders {
+  color: orange
+}
+
+.doneOrdersHeader {
+  color: white;
+  background-color: orange;
+}

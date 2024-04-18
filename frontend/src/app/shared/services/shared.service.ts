@@ -37,7 +37,7 @@ export class SharedService {
   private _websocketEndpoint: string = `ws://${this.hostname}:8000/ws`
 
   /** Polling interval in miliseconds. 1000ms = 1s */
-  private _pollingInterval: number = 5000
+  private _pollingInterval: number = 5000000000
 
   private _pollingIntervalLong: number = 1000 * 60 * 3 /** Every 3 mins */
 
