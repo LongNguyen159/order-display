@@ -1,20 +1,25 @@
 from typing import Union, List, Optional
-from fastapi import FastAPI, Depends, HTTPException
+
+import asyncio
+# Fast API
+from fastapi import FastAPI, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+
+# SQL import
 from sqlalchemy.orm import Session
+from sqlalchemy import event
+from sqlalchemy.orm.attributes import get_history
+
 import models, schemas, crud
 from database import SessionLocal, engine
 
-from fastapi import FastAPI
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
-### Todo: DEPLOYMENT:
-# Run command `uvicorn main:app --host=longs-macbook.local --reload` to start the app, BUT:
-# Change the hostname `longs-macbook.local` to the hostname of the computer which acts as server later.
-# GOAL: make server accessible within the same network.
+change_detect = False
 
+## RUN ON LOCALHOST ALWAYS AS A SERVER
 # Dependency to get the database session
 def get_db():
     db = SessionLocal()
@@ -28,9 +33,40 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
 )
+
+@app.websocket("/ws")
+async def websocketEndpoint(websocket: WebSocket):
+    await websocket.accept()
+    global change_detect
+    while True:
+        try:
+            if change_detect == True:
+                await websocket.send_text('Order table has changed')
+                change_detect = False
+            else:
+                await asyncio.sleep(1)
+        except WebSocketDisconnect:
+            print('disconnected')
+            break
+
+def track_status_changes(mapper, connection, target):
+        db = next(get_db())    
+        order_datasource = crud.get_all_orders(db=db)
+        on_change_detected()
+        
+
+def on_change_detected():
+    global change_detect
+    change_detect = True
+    
+# Add the event listeners
+event.listen(models.Order, 'after_update', track_status_changes)
+event.listen(models.Order, 'after_insert', track_status_changes)
+event.listen(models.Order, 'after_delete', track_status_changes)
+
 
 # Get all Locations
 @app.get("/locations/", response_model=List[schemas.Location])

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Location, NewOrder, Order } from '../models/shared-models';
-import { Observable, switchMap, timer } from 'rxjs';
+import { Observable, Subject, switchMap, timer } from 'rxjs';
 import {
   MatSnackBar,
   MatSnackBarAction,
@@ -28,35 +28,50 @@ export class SharedService {
    * - change 'longs-macbook.local' to the hostname of the laptop that acts as server later.
    * - run commend `ng serve --host=`
    */
-  private _apiEndpoint: string = `http://longs-macbook.local:8000`
+
+  private hostname: string = 'longs-macbook.local'
+
+  /** Endpoints */
+  private _apiEndpoint: string = `http://${this.hostname}:8000`
+
+  private _websocketEndpoint: string = `ws://${this.hostname}:8000/ws`
 
   /** Polling interval in miliseconds. 1000ms = 1s */
   private _pollingInterval: number = 5000
 
-  constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
+  private _pollingIntervalLong: number = 1000 * 60 * 3 /** Every 3 mins */
 
-  // getLocalIpAddress(): Promise<string> {
-  //   return new Promise((resolve, reject) => {
-  //     const pc = new RTCPeerConnection();
-  //     pc.createDataChannel('');
+  /** Websocket */
+  private _ws: WebSocket
+  websocketDataSubject: Subject<string> = new Subject<string>()
 
-  //     pc.onicecandidate = (event) => {
-  //       if (event.candidate) {
-  //         const sdpLines = event.candidate.candidate.split('\n');
-  //         const ipLine = sdpLines.find(line => line.startsWith('a=candidate'));
 
-  //         if (ipLine) {
-  //           const ipAddress = ipLine.split(' ')[4];
-  //           resolve(ipAddress);
-  //         }
-  //       }
-  //     };
 
-  //     pc.createOffer()
-  //       .then(offer => pc.setLocalDescription(offer))
-  //       .catch(error => reject(error));
-  //   });
-  // }
+  constructor(private http: HttpClient, private snackbar: MatSnackBar) {
+  }
+  connectToWebsocket(): Observable<any> {
+    return new Observable((observer: any) => {
+      this._ws = new WebSocket(this._websocketEndpoint)
+      this._ws.onmessage = event => {
+        // const data: any = JSON.parse(event.data)
+        console.log(event.data)
+        this.websocketDataSubject.next(event.data)
+      }
+
+      this._ws.onclose = () => {
+        observer.complete()
+      }
+    })
+  }
+
+  getWebsocketData(): Observable<string> {
+    return this.websocketDataSubject.asObservable()
+  }
+
+  closeWebsocket() {
+    this._ws.close()
+  }
+
 
   /** Poll results  */
   getAllOrders() {
@@ -68,11 +83,10 @@ export class SharedService {
   }
 
   getAllLocations() {
-    // return timer(1, this._pollingInterval).pipe(
-    //   // Use switchMap to switch to a new observable each time interval emits a value
-    //   switchMap(() => this.http.get<Location[]>(`${this._apiEndpoint}/locations/`))
-    // )
-    return this.http.get<Location[]>(`${this._apiEndpoint}/locations/`)
+    return timer(1, this._pollingIntervalLong).pipe(
+      // Use switchMap to switch to a new observable each time interval emits a value
+      switchMap(() => this.http.get<Location[]>(`${this._apiEndpoint}/locations/`))
+    )
   }
 
   createLocation(description: string) {

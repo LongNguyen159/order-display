@@ -22,6 +22,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed$.next()
     this.componentDestroyed$.complete()
+    this.sharedService.closeWebsocket()
   }
 
 }

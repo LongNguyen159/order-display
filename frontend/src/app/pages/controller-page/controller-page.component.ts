@@ -75,7 +75,6 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
   constructor(private pageService: PageService,
     private router: Router,
-    private sharedService: SharedService,
     private dialog: MatDialog
   ) {
     super()
@@ -83,7 +82,15 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   // @ts-ignore
   ngOnInit(): void {
     this.getAllOrders()
-    this.getAllLocations() 
+    this.getAllLocations()
+    this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
+    })
+
+
+    this.sharedService.getWebsocketData().pipe(takeUntil(this.componentDestroyed$)).subscribe(websocketData => {
+      console.log(websocketData, 'data')
+      this.updateDatasource()
+    })
   }
 
 
@@ -93,13 +100,22 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
       this.dataSource = new MatTableDataSource(allOrders)
       this.dataSource.paginator = this.paginator
-      this.updateDatasource()
+      // this.updateDatasource()
     })
   }
 
   getAllLocations() {
     this.sharedService.getAllLocations().pipe(takeUntil(this.componentDestroyed$)).subscribe(locations => {
       this.locations = locations
+    })
+  }
+
+  getDataSourceTest() {
+    this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
+      // this.dataSource.data = allOrders
+      this.allOrders = allOrders
+
+      this.dataSource.paginator = this.paginator
     })
   }
 
