@@ -59,12 +59,11 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   updatingDoneStatus: boolean = false /** Boolean flag true when server are patching 'done' value */
 
 
-
-  enteredValue: string = ''
-
-
   /** Table Data */
   dataSource: MatTableDataSource<Order>
+
+  filteredOrders: Order[] = []
+  filterLocationId: number = 0
 
 
   /** Form section */
@@ -93,6 +92,19 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     })
   }
 
+  filterOrders(locationId: number) {
+    this.filterLocationId = locationId
+    if (locationId !== 0) {
+      this.filteredOrders = this.allOrders.filter(order => order.location_id == locationId)  
+      this.dataSource.data = this.filteredOrders
+    } else {
+      this.dataSource.data = this.allOrders
+    }
+    
+    
+
+  }
+
 
   getAllOrders() {
     this.sharedService.getAllOrders().pipe(takeUntil(this.componentDestroyed$)).subscribe(allOrders => {
@@ -100,7 +112,6 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
       this.dataSource = new MatTableDataSource(allOrders)
       this.dataSource.paginator = this.paginator
-      // this.updateDatasource()
     })
   }
 
@@ -110,20 +121,11 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     })
   }
 
-  getDataSourceTest() {
-    this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
-      // this.dataSource.data = allOrders
-      this.allOrders = allOrders
-
-      this.dataSource.paginator = this.paginator
-    })
-  }
-
-
   updateDatasource() {
     this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
-      this.dataSource.data = allOrders
+      this.dataSource.data = this.filteredOrders
       this.allOrders = allOrders
+      this.filterOrders(this.filterLocationId)
       this.dataSource.paginator = this.paginator
     })
 

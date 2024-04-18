@@ -39,7 +39,25 @@
     </form>
   </div>
   <div>
-    <h2>Current Orders: {{allOrders.length}}</h2>
+    <div class="flex flex-row justify-between items-center">
+      <div class="flex flex-row items-center">
+        <h2>Current Orders: {{allOrders.length}}</h2>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Filter by Location</mat-label>
+          <mat-select name="locationId" (selectionChange)="filterOrders($event.value)">
+            <mat-option [value]="0">- None</mat-option>
+            <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
+              <div class="flex flex-row items-center justify-between w-full">
+                {{ location.id }} - {{ location.description }}
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 shadow-none greyBorder">
 
         <!-- Order Number Column -->
