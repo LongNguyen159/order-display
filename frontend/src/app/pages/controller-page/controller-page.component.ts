@@ -193,7 +193,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     this.sharedService.updateOrderDone(parseInt(id), checked).pipe(take(1)).subscribe({
       next: (value: any) => {
         this.sharedService.openSnackbar(`Order ${order.order_number} updated!`)
-        this.updateDatasource()
+        // this.updateDatasource()
       },
       error: (err: HttpErrorResponse) => {
         console.error(err)

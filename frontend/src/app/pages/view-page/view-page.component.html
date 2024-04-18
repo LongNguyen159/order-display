@@ -1,13 +1,21 @@
-<div>
+<div  class="grid h-full p-6" style="grid-template-columns: 1fr 2fr;">
     <!-- preparing -->
     <!-- this section contains items that exists, but 'done' is false -->
-    <div>
-
+    <div class="flex flex-col">
+        <div class="flex justify-center items-center">Preparing</div>
+        <div *ngFor="let item of preparingOrders" class="flex flex-col justify-center items-center align-center text-5xl">
+            {{ item.order_number }}
+        </div>
     </div>
 
     <!-- ready to pickup -->
     <!-- 'done' is true means ready to pickup -->
-    <div>
-
+    <div class="flex flex-col">
+        <div class="flex justify-center items-center">Ready to Pickup</div>
+        <div class="flex flex-col h-full justify-evenly">
+            <div *ngFor="let item of readyToPickupOrders" class="flex flex-col justify-center items-center align-center text-7xl">
+                {{ item.order_number }}
+            </div>
+        </div>
     </div>
 </div>
