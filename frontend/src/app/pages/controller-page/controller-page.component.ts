@@ -107,6 +107,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   updateDatasource() {
     this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
       this.dataSource.data = allOrders
+      this.allOrders = allOrders
       this.dataSource.paginator = this.paginator
     })
 
