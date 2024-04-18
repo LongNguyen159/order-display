@@ -14,6 +14,12 @@ import { Order } from '../../shared/models/shared-models';
   templateUrl: './view-page.component.html',
   styleUrl: './view-page.component.scss'
 })
+
+/**
+ * TODO:
+ * - filter based on location here. Idea: make a bar above stating which 
+ * location this is. (also selectable dropdown)
+ */
 export class ViewPageComponent extends BaseComponent implements OnInit, OnDestroy {
   allOrders: Order[] = []
   filteredOrderByLocation: Order[] = []
