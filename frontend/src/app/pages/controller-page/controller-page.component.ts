@@ -100,9 +100,6 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     } else {
       this.dataSource.data = this.allOrders
     }
-    
-    
-
   }
 
 
@@ -112,6 +109,8 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
       this.dataSource = new MatTableDataSource(allOrders)
       this.dataSource.paginator = this.paginator
+
+      this.filterOrders(this.filterLocationId)
     })
   }
 
