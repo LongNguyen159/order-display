@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
 import { PageService } from '../service/page.service';
 import { CommonModule } from '@angular/common';
+import { BaseComponent } from '../../shared/components/base/base.component';
+import { Order } from '../../shared/models/shared-models';
 
 @Component({
   selector: 'app-view-page',
@@ -12,26 +14,36 @@ import { CommonModule } from '@angular/common';
   templateUrl: './view-page.component.html',
   styleUrl: './view-page.component.scss'
 })
-export class ViewPageComponent implements OnInit, OnDestroy {
-  savedValue: string = '';
-  valueSubject: BehaviorSubject<string>;
-  onDestroy$: Subject<void> = new Subject<void>()
+export class ViewPageComponent extends BaseComponent implements OnInit, OnDestroy {
+  allOrders: Order[] = []
 
-  constructor(private pageService: PageService) {}
+  constructor() {
+    super()
+  }
+
+  // @ts-ignore
   ngOnInit(): void {
-    this.pageService.getValue().pipe(takeUntil(this.onDestroy$)).subscribe(value => {
-      this.savedValue = localStorage.getItem('enteredValue') || '';
+    this.sharedService.getAllOrders().pipe(takeUntil(this.componentDestroyed$)).subscribe(allOrders => {
+      this.allOrders = allOrders
+      console.log('OnInit view page:', allOrders)
+    })
+    this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
+
     })
 
-    window.addEventListener('storage', (event) => {
-      if (event.key === 'enteredValue') {
-        this.savedValue = event.newValue || '';
+
+    this.sharedService.getWebsocketData().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
+      if (data) {
+        this.updateDatasource()
       }
-    });
+    })
   }
 
-  ngOnDestroy(): void {
-    this.onDestroy$.next()
-    this.onDestroy$.complete()
+  updateDatasource() {
+    this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
+      this.allOrders = allOrders
+      console.log('all orders updated', allOrders)
+    })
   }
+
 }
