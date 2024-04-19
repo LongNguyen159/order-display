@@ -7,7 +7,7 @@ export const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: '/view',
+        redirectTo: '/',
         pathMatch: 'full'
     }
 ];
