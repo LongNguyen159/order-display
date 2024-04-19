@@ -37,7 +37,8 @@ export class SharedService {
   private _websocketEndpoint: string = `ws://${this.hostname}:8000/ws`
 
   /** Polling interval in miliseconds. 1000ms = 1s */
-  private _pollingInterval: number = 99999999
+  /** TODO: modify polling interval back to a few seconds */
+  private _pollingInterval: number = 3000
 
   private _pollingIntervalLong: number = 1000 * 60 * 3 /** Every 3 mins */
 
@@ -95,7 +96,8 @@ export class SharedService {
   }
 
   closeWebsocket() {
-    this._socket.close(1000, 'Exit page')
+    // this._socket.send('leave')
+    this._socket.close(1000)
     console.log('closed ID:', this.websocketClientId)
   }
 

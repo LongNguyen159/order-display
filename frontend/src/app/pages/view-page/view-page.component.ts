@@ -94,4 +94,8 @@ export class ViewPageComponent extends BaseComponent implements OnInit, OnDestro
     })
   }
 
+  // @ts-ignore
+  ngOnDestroy(): void {
+    this.sharedService.closeWebsocket()
+  }
 }

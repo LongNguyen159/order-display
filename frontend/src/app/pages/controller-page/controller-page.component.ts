@@ -255,4 +255,8 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   navigateToHome() {
     this.router.navigate(['/home'])
   }
+
+  disconnect() {
+    this.sharedService.closeWebsocket()
+  }
 }

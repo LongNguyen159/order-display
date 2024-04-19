@@ -18,9 +18,8 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 change_detect = False
-connected_clients: list[WebSocket] = []
 
-## RUN ON LOCALHOST ALWAYS AS A SERVER
+## ALWAYS RUN ON `LOCALHOST` AS A SERVER
 # Dependency to get the database session
 def get_db():
     db = SessionLocal()
@@ -38,34 +37,51 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.websocket("/ws")
-async def websocketEndpoint(websocket: WebSocket):
-    await websocket.accept()
-    connected_clients.append(websocket)
-    print(connected_clients)
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: list[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+
+websocket_manager = ConnectionManager()
+
+
+@app.websocket("/ws/{client_id}")
+async def websocketEndpoint(websocket: WebSocket, client_id: int):
     global change_detect
+    await websocket_manager.connect(websocket)
+    await websocket_manager.broadcast(f"Client #{client_id} connected to websocket.")
     try:
-        
-        while websocket in connected_clients:
-            try:
-                if change_detect:
-                    for client in connected_clients:
-                        await client.send_text('Order has changed')
-                        
-                    change_detect = False
-                else:
-                    await asyncio.sleep(0.1)
-            except WebSocketDisconnect:
-                print('disconnect')
-                if websocket in connected_clients:
-                    connected_clients.remove(websocket)
-    finally:
-        connected_clients.remove(websocket)
-            
+        while True:
+            if change_detect:
+                ## Broadcast message to all clients upon changes detected in database (via boolean flag)
+                await websocket_manager.broadcast(f'Client #{client_id} modified Order table')
+                print('broadcasted!')
+                ## After broadcasting, set change detect to false again, then await for next changes.
+                change_detect = False
+            await asyncio.sleep(1)
+    except WebSocketDisconnect:
+        print('disconnect client')
+        websocket_manager.disconnect(websocket)
+        await websocket_manager.broadcast(f"Client #{client_id} left.")
+
 
 def track_status_changes(mapper, connection, target):
-        db = next(get_db())
-        order_datasource = crud.get_all_orders(db=db)
+        # Detect changes in databases, triggered by event listeners
         on_change_detected()
         
 
