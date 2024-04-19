@@ -11,7 +11,7 @@
 
 <div class="px-4">
   <div>
-    <form (ngSubmit)="onSubmit()" class="flex flex-row justify-center align-center gap-10 py-6">
+    <form (ngSubmit)="onSubmit()" class="flex flex-row justify-center align-center items-center gap-10 py-6">
       <mat-form-field>
         <mat-label>Order Number</mat-label>
         <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" (keydown.enter)="onEnterOrderNumber()">
@@ -43,11 +43,11 @@
       <div class="flex flex-row items-center">
         <h2>Current Orders: {{allOrders.length}}</h2>
       </div>
-      <div>
+      <div class="mb-4">
         <mat-form-field>
           <mat-label>Filter by Location</mat-label>
           <mat-select name="locationId" (selectionChange)="filterOrders($event.value)">
-            <mat-option [value]="0">- None</mat-option>
+            <mat-option [value]="0">-- None --</mat-option>
             <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
               <div class="flex flex-row items-center justify-between w-full">
                 {{ location.id }} - {{ location.description }}

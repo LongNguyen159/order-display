@@ -1,13 +1,11 @@
-import { Component, OnDestroy, OnInit, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject, take, takeUntil } from 'rxjs';
-import { PageService } from '../service/page.service';
+import { take, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { SharedService } from '../../shared/services/shared.service';
 import { BaseComponent } from '../../shared/components/base/base.component';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { Location, NewOrder, Order } from '../../shared/models/shared-models';
@@ -72,7 +70,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   done: boolean = false
   
 
-  constructor(private pageService: PageService,
+  constructor(
     private router: Router,
     private dialog: MatDialog
   ) {
@@ -82,12 +80,13 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getAllOrders()
     this.getAllLocations()
-    this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
-    })
+    // this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
+    // })
 
+    // this.sharedService.connectWebsocket()
 
     this.sharedService.getWebsocketData().pipe(takeUntil(this.componentDestroyed$)).subscribe(websocketData => {
-      console.log(websocketData, 'data')
+      console.log('Controller page received websocket message')
       this.updateDatasource()
     })
   }

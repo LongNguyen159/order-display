@@ -37,31 +37,57 @@ export class SharedService {
   private _websocketEndpoint: string = `ws://${this.hostname}:8000/ws`
 
   /** Polling interval in miliseconds. 1000ms = 1s */
-  private _pollingInterval: number = 5000
+  private _pollingInterval: number = 99999999
 
   private _pollingIntervalLong: number = 1000 * 60 * 3 /** Every 3 mins */
 
   /** Websocket */
   private _ws: WebSocket
+  private _socket: WebSocket
   websocketDataSubject: Subject<string> = new Subject<string>()
+  websocketClientId: number
 
 
 
   constructor(private http: HttpClient, private snackbar: MatSnackBar) {
+    this.connectWebsocket()
   }
-  connectToWebsocket(): Observable<any> {
-    return new Observable((observer: any) => {
-      this._ws = new WebSocket(this._websocketEndpoint)
-      this._ws.onmessage = event => {
-        // const data: any = JSON.parse(event.data)
-        console.log(event.data)
-        this.websocketDataSubject.next(event.data)
-      }
+  // connectToWebsocket(): Observable<any> {
+  //   return new Observable((observer: any) => {
+  //     this._ws = new WebSocket(this._websocketEndpoint)
+  //     this._ws.onmessage = event => {
+  //       // const data: any = JSON.parse(event.data)
+  //       console.log(event.data)
+  //       this.websocketDataSubject.next(event.data)
+  //     }
 
-      this._ws.onclose = () => {
-        observer.complete()
-      }
-    })
+  //     this._ws.onclose = () => {
+  //       observer.complete()
+  //     }
+  //   })
+  // }
+
+  connectWebsocket() {
+    this.websocketClientId = Date.now()
+    console.log('clientId:', this.websocketClientId)
+    this._socket = new WebSocket(`${this._websocketEndpoint}/${this.websocketClientId}`)
+
+    this._socket.onopen = () => {
+      console.log('WebSocket connection established')
+    };
+
+    this._socket.onmessage = (event) => {
+      console.log('Received message:', event.data)
+      this.websocketDataSubject.next(event.data)
+    }
+
+    this._socket.onclose = (event) => {
+      console.log('WebSocket connection closed')
+    }
+
+    this._socket.onerror = (error) => {
+      console.error('WebSocket error:', error)
+    }
   }
 
   getWebsocketData(): Observable<string> {
@@ -69,7 +95,8 @@ export class SharedService {
   }
 
   closeWebsocket() {
-    // this._ws.close()
+    this._socket.close(1000, 'Exit page')
+    console.log('closed ID:', this.websocketClientId)
   }
 
 

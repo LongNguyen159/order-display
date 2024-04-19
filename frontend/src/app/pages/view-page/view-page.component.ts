@@ -1,15 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
-import { PageService } from '../service/page.service';
+import { take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { BaseComponent } from '../../shared/components/base/base.component';
-import { Order } from '../../shared/models/shared-models';
+import { Location, Order } from '../../shared/models/shared-models';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-view-page',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   templateUrl: './view-page.component.html',
   styleUrl: './view-page.component.scss'
@@ -28,6 +33,8 @@ export class ViewPageComponent extends BaseComponent implements OnInit, OnDestro
   readyToPickupOrders: Order[] = []
   preparingOrders: Order[] = []
 
+  locations: Location[] = []
+
   constructor() {
     super()
   }
@@ -43,14 +50,20 @@ export class ViewPageComponent extends BaseComponent implements OnInit, OnDestro
       this.filterOrderType()
     })
 
-    /** Connect to websocket */
-    this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
-
+    this.sharedService.getAllLocations().pipe(takeUntil(this.componentDestroyed$)).subscribe(locations => {
+      this.locations = locations
     })
+
+    /** Connect to websocket */
+    // this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
+
+    // })
+    // this.sharedService.connectWebsocket()
 
     /** Get websocket data */
     this.sharedService.getWebsocketData().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
       if (data) {
+        console.log('view page received websocket message')
         this.updateDatasource()
       }
     })
@@ -64,10 +77,11 @@ export class ViewPageComponent extends BaseComponent implements OnInit, OnDestro
   filterOrderLocation(locationId: number) {
     this.filterLocationId = locationId
     if (locationId !== 0) {
-      this.filteredOrderByLocation = this.allOrders.filter(order => order.location_id == locationId)  
+      this.filteredOrderByLocation = this.allOrders.filter(order => order.location_id == locationId)
     } else {
       this.filteredOrderByLocation = this.allOrders
     }
+    this.filterOrderType()
   }
 
 
