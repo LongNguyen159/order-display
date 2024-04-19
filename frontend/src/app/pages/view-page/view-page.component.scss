@@ -58,3 +58,15 @@
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
   display: none;
 }
+
+::ng-deep .mat-mdc-select-value {
+  display: flex;
+  justify-content: center;
+  font-size: x-large;
+  font-weight: 500;
+  color: rgb(100 100 100);
+}
+
+::ng-deep .mat-mdc-form-field {
+  width: 100%;
+}
