@@ -2,7 +2,7 @@
   <div class="flex flex-row items-center justify-center">
     <mat-form-field>
       <mat-label>Section</mat-label>
-      <mat-select name="locationId" (selectionChange)="filterOrderLocation($event.value)">
+      <mat-select name="locationId" [(ngModel)]="defaultLocationId" (selectionChange)="filterOrderLocation($event.value)">
         <mat-option [value]="0">All sections</mat-option>
         <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
           <div class="flex flex-row items-center justify-between w-full">
