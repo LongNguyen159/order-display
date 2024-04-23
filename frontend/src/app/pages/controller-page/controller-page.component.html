@@ -62,8 +62,9 @@
   </div>
   <div>
     <div class="flex flex-row justify-between items-center">
-      <div class="flex flex-row items-center">
-        <h2>Current Orders: {{allOrders.length}}</h2>
+      <div class="flex flex-col align-start">
+        <h2 style="color: rgb(50, 50, 50);">Orders (All sections): {{allOrders.length}}</h2>
+        <h3 style="color: rgb(82, 82, 82);">Orders of current section: {{filteredOrders.length}}</h3>
       </div>
       <div class="mb-4">
         <mat-form-field>
