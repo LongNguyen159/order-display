@@ -1,11 +1,33 @@
 <mat-toolbar>
-    <div class="flex flex-row items-center justify-center" (click)="navigateToHome()">
+    <div class="flex flex-row justify-between w-full">
+      <div class="flex flex-row items-center justify-center" (click)="navigateToHome()">
         <button mat-button>
             <mat-icon>
                 arrow_back
             </mat-icon>
             <span>Home</span>
         </button>
+      </div>
+      <div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <div class="flex flex-row align-center p-4">
+            <h3 style="margin: 0; font-weight: 500; color: rgb(95, 95, 95);">Default Section:</h3>
+            <mat-form-field  (click)="$event.stopPropagation()">
+              
+              <mat-select (selectionChange)="onDefaultLocationSelect($event)" name="locationId" required>
+                <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
+                  <div class="flex flex-row items-center justify-between w-full">
+                    {{ location.id }} - {{ location.description }}
+                  </div>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-menu>
+      </div>
     </div>
 </mat-toolbar>
 
@@ -17,7 +39,7 @@
         <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" (keydown.enter)="onEnterOrderNumber()">
       </mat-form-field>
 
-      <mat-checkbox [(ngModel)]="done" name="done">Order is ready to pickup</mat-checkbox>
+      <!-- <mat-checkbox [(ngModel)]="done" name="done">Order is ready to pickup</mat-checkbox> -->
       
       <mat-form-field>
         <mat-label>Sections</mat-label>
@@ -46,7 +68,7 @@
       <div class="mb-4">
         <mat-form-field>
           <mat-label>Filter by Location</mat-label>
-          <mat-select name="locationId" (selectionChange)="filterOrders($event.value)">
+          <mat-select name="locationId" [(ngModel)]="locationIdToFilter" (selectionChange)="filterOrders($event.value)">
             <mat-option [value]="0">-- None --</mat-option>
             <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
               <div class="flex flex-row items-center justify-between w-full">

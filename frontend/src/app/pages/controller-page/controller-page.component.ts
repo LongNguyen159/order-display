@@ -10,7 +10,7 @@ import { BaseComponent } from '../../shared/components/base/base.component';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { Location, NewOrder, Order } from '../../shared/models/shared-models';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
@@ -18,6 +18,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatMenuModule} from '@angular/material/menu';
 
 
 @Component({
@@ -36,6 +37,7 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
     CommonModule,
     MatOptionModule,    
     MatPaginatorModule,
+    MatMenuModule,
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -61,13 +63,13 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   dataSource: MatTableDataSource<Order>
 
   filteredOrders: Order[] = []
-  filterLocationId: number = 0
+  locationIdToFilter: number = 0
 
 
   /** Form section */
   orderNumber: string
   locationId: number
-  done: boolean = false
+  done: boolean = true
   
 
   constructor(
@@ -83,7 +85,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   }
 
   filterOrders(locationId: number) {
-    this.filterLocationId = locationId
+    this.locationIdToFilter = locationId
     if (locationId !== 0) {
       this.filteredOrders = this.allOrders.filter(order => order.location_id == locationId)  
       this.dataSource.data = this.filteredOrders
@@ -100,7 +102,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
       this.dataSource = new MatTableDataSource(allOrders)
       this.dataSource.paginator = this.paginator
 
-      this.filterOrders(this.filterLocationId)
+      this.filterOrders(this.locationIdToFilter)
     })
   }
 
@@ -114,7 +116,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     this.sharedService.getAllOrders().pipe(take(1)).subscribe(allOrders => {
       this.dataSource.data = this.filteredOrders
       this.allOrders = allOrders
-      this.filterOrders(this.filterLocationId)
+      this.filterOrders(this.locationIdToFilter)
       this.dataSource.paginator = this.paginator
     })
 
@@ -191,6 +193,14 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
         this.updateDatasource()
       }
     })
+  }
+
+
+  onDefaultLocationSelect(locationChange: MatSelectChange) {
+    const locationId = locationChange.value
+    this.locationIdToFilter = locationId
+    this.locationId = locationId
+    this.filterOrders(locationId)
   }
 
   onCreateLocation() {

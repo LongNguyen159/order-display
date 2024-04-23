@@ -129,6 +129,14 @@ export class SharedService {
     return this.http.delete(`${this._apiEndpoint}/orders/${id}`)
   }
 
+  clearAllOrders() {
+    return this.http.delete(`${this._apiEndpoint}/orders`)
+  }
+
+  clearAllLocations() {
+    return this.http.delete(`${this._apiEndpoint}/locations`)
+  }
+  
   openSnackbar(message: string, position = 'bottom') {
     this.snackbar.open(message, 'Dismiss', {
       verticalPosition: position as MatSnackBarVerticalPosition,
