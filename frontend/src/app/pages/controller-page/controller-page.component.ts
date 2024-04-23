@@ -80,15 +80,6 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getAllOrders()
     this.getAllLocations()
-    // this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
-    // })
-
-    // this.sharedService.connectWebsocket()
-
-    this.sharedService.getWebsocketData().pipe(takeUntil(this.componentDestroyed$)).subscribe(websocketData => {
-      console.log('Controller page received websocket message')
-      this.updateDatasource()
-    })
   }
 
   filterOrders(locationId: number) {

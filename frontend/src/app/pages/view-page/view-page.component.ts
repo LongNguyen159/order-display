@@ -53,20 +53,6 @@ export class ViewPageComponent extends BaseComponent implements OnInit, OnDestro
     this.sharedService.getAllLocations().pipe(takeUntil(this.componentDestroyed$)).subscribe(locations => {
       this.locations = locations
     })
-
-    /** Connect to websocket */
-    // this.sharedService.connectToWebsocket().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
-
-    // })
-    // this.sharedService.connectWebsocket()
-
-    /** Get websocket data */
-    this.sharedService.getWebsocketData().pipe(takeUntil(this.componentDestroyed$)).subscribe(data => {
-      if (data) {
-        console.log('view page received websocket message')
-        this.updateDatasource()
-      }
-    })
   }
 
   filterOrderType() {

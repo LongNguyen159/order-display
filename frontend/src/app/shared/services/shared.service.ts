@@ -29,7 +29,7 @@ export class SharedService {
    * - run commend `ng serve --host=`
    */
 
-  private hostname: string = 'longs-macbook.local'
+  private hostname: string = 'LongsLocalDevMachine'
 
   /** Endpoints */
   private _apiEndpoint: string = `http://${this.hostname}:8000`
@@ -50,24 +50,9 @@ export class SharedService {
 
 
 
-  constructor(private http: HttpClient, private snackbar: MatSnackBar) {
-    this.connectWebsocket()
-  }
-  // connectToWebsocket(): Observable<any> {
-  //   return new Observable((observer: any) => {
-  //     this._ws = new WebSocket(this._websocketEndpoint)
-  //     this._ws.onmessage = event => {
-  //       // const data: any = JSON.parse(event.data)
-  //       console.log(event.data)
-  //       this.websocketDataSubject.next(event.data)
-  //     }
+  constructor(private http: HttpClient, private snackbar: MatSnackBar) {}
 
-  //     this._ws.onclose = () => {
-  //       observer.complete()
-  //     }
-  //   })
-  // }
-
+  /** Websocket is not scalable, we will use polling from now. */
   connectWebsocket() {
     this.websocketClientId = Date.now()
     console.log('clientId:', this.websocketClientId)
@@ -96,7 +81,6 @@ export class SharedService {
   }
 
   closeWebsocket() {
-    // this._socket.send('leave')
     this._socket.close(1000)
     console.log('closed ID:', this.websocketClientId)
   }
