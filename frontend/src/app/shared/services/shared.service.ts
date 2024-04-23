@@ -38,7 +38,7 @@ export class SharedService {
 
   /** Polling interval in miliseconds. 1000ms = 1s */
   /** TODO: modify polling interval back to a few seconds */
-  private _pollingInterval: number = 3000
+  private _pollingInterval: number = 2000
 
   private _pollingIntervalLong: number = 1000 * 60 * 3 /** Every 3 mins */
 

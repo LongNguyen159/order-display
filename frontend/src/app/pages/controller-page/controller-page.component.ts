@@ -44,10 +44,8 @@ import {MatMenuModule} from '@angular/material/menu';
 })
 /**
  * TODO:
- * - Display values in View page
  * - Add Date column to database
  * - Implement clear all records button
- * 
  */
 export class ControllerPageComponent extends BaseComponent implements OnInit {
   @ViewChild('paginator') paginator: MatPaginator
@@ -70,6 +68,8 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   orderNumber: string
   locationId: number
   done: boolean = true
+
+  defaultLocationId: number = 0
   
 
   constructor(
@@ -82,6 +82,14 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getAllOrders()
     this.getAllLocations()
+
+    const defaultLocationIdString = localStorage.getItem('defaultLocationId')
+
+    if (defaultLocationIdString) {
+      this.defaultLocationId = parseInt(defaultLocationIdString)
+      this.locationIdToFilter = this.defaultLocationId
+      this.locationId = this.defaultLocationId
+    }
   }
 
   filterOrders(locationId: number) {
@@ -198,9 +206,15 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
 
   onDefaultLocationSelect(locationChange: MatSelectChange) {
     const locationId = locationChange.value
+
+    /** Update all location IDs to reflect ngModel changes in template. */
     this.locationIdToFilter = locationId
     this.locationId = locationId
+    /** Filter orders accordingly after setting default section */
     this.filterOrders(locationId)
+
+    /** Save on local storage */
+    localStorage.setItem('defaultLocationId', locationId)
   }
 
   onCreateLocation() {

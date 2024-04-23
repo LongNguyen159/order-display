@@ -15,9 +15,9 @@
         <mat-menu #menu="matMenu">
           <div class="flex flex-row align-center p-4">
             <h3 style="margin: 0; font-weight: 500; color: rgb(95, 95, 95);">Default Section:</h3>
-            <mat-form-field  (click)="$event.stopPropagation()">
+            <mat-form-field (click)="$event.stopPropagation()">
               
-              <mat-select (selectionChange)="onDefaultLocationSelect($event)" name="locationId" required>
+              <mat-select [(ngModel)]="defaultLocationId" (selectionChange)="onDefaultLocationSelect($event)" name="locationId" required>
                 <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
                   <div class="flex flex-row items-center justify-between w-full">
                     {{ location.id }} - {{ location.description }}
