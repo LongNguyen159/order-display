@@ -29,7 +29,7 @@ export class SharedService {
    * - run commend `ng serve --host=`
    */
 
-  private hostname: string = 'LongsLocalDevMachine'
+  private hostname: string = 'macbookpro-m1.local'
 
   /** Endpoints */
   private _apiEndpoint: string = `http://${this.hostname}:8000`
