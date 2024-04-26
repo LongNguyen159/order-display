@@ -3,7 +3,19 @@ import subprocess
 import logging
 from pathlib import Path
 
-### RUN THIS CODE TO START THE APP ###
+''' 
+RUN THIS CODE TO START THE APP.
+
+IF THIS IS THE FIRST TIME YOU RUN THIS APP, ENSURE ALL DEPENDENCIES ARE INSTALLED USING
+BELOW COMMAND:
+(Run the command inside project directory)
+
+macOS / Linux: `pip install -r backend/requirements.txt`
+Windows: `py -m pip install -r backend\requirements.txt`
+
+'''
+
+
 def start_backend():
     backend_path = Path("backend")
     print("Starting backend server...")
