@@ -39,7 +39,6 @@
         <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" (keydown.enter)="onEnterOrderNumber()">
       </mat-form-field>
 
-      <!-- <mat-checkbox [(ngModel)]="done" name="done">Order is ready to pickup</mat-checkbox> -->
       
       <mat-form-field>
         <mat-label>Sections</mat-label>
@@ -55,6 +54,8 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <mat-checkbox [(ngModel)]="done" name="done">Ready to pickup</mat-checkbox>
       
       
       <button mat-raised-button color="primary" type="submit" [disabled]="isOrderNumberEmpty() || isLocationEmpty()">Enter</button>
