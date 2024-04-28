@@ -99,6 +99,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
       this.dataSource.data = this.filteredOrders
     } else {
       this.dataSource.data = this.allOrders
+      this.filteredOrders = this.allOrders
     }
   }
 
