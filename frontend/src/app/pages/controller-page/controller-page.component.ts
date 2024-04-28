@@ -15,10 +15,11 @@ import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatMenuModule} from '@angular/material/menu';
+import { AlertDialogComponent, DialogData } from '../../shared/components/alert-dialog/alert-dialog.component';
 
 
 @Component({
@@ -38,6 +39,7 @@ import {MatMenuModule} from '@angular/material/menu';
     MatOptionModule,    
     MatPaginatorModule,
     MatMenuModule,
+    MatDialogModule
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -184,6 +186,40 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
         this.updateDatasource()
       }
     })
+  }
+
+
+  clearDatabase(event: Event) {
+    event.stopPropagation()
+    const dialogData: DialogData = {
+      title: 'Are you sure you want to delete all records?',
+      message: `This will clear all data from the database from all sections. Action cannot be undone.`,
+      confirmLabel: 'Delete',
+      cancelLabel: 'Cancel',
+      confirmButtonColor: 'warn'
+    }
+
+    const dialogRef = this.dialog.open(AlertDialogComponent, {
+      width: '40vw',
+      data: dialogData
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.sharedService.clearAllOrders().pipe(take(1)).subscribe({
+          next: (res) => {
+            this.updateDatasource()
+            this.sharedService.openSnackbar('All records cleared!')
+          },
+          error: (err: HttpErrorResponse) => {
+            this.updateDatasource()
+            this.sharedService.openSnackbar(`Error clearing database, please try again`)
+          }
+        })
+      } else {
+        return
+      }
+    })
+
   }
 
 

@@ -1,3 +1,4 @@
+<!-- TOOLBAR SECTION -->
 <mat-toolbar>
     <div class="flex flex-row justify-between w-full">
       <div class="flex flex-row items-center justify-center" (click)="navigateToHome()">
@@ -8,7 +9,8 @@
             <span>Home</span>
         </button>
       </div>
-      <div>
+      <div class="flex flex-row items-center gap-2">
+        <button mat-stroked-button color="warn" (click)="clearDatabase($event)">Clear database</button>
         <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
           <mat-icon>settings</mat-icon>
         </button>
@@ -72,7 +74,7 @@
         <!-- <h2 style="color: rgb(50, 50, 50);">Orders (All sections): {{allOrders.length}}</h2> -->
         <h2 style="color: rgb(55, 55, 55);">Orders of current section: {{filteredOrders.length}}</h2>
       </div>
-      <div class="mb-4">
+      <div class="flex flex-row gap-4 items-center mb-4">
         <mat-form-field>
           <mat-label>Filter by Section</mat-label>
           <mat-select name="locationId" [(ngModel)]="locationIdToFilter" (selectionChange)="filterOrders($event.value)">
