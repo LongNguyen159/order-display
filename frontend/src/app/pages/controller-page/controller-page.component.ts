@@ -20,7 +20,7 @@ import { DialogComponent } from '../../shared/components/dialog/dialog.component
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatMenuModule} from '@angular/material/menu';
 import { AlertDialogComponent, DialogData } from '../../shared/components/alert-dialog/alert-dialog.component';
-
+import {MatCardModule} from '@angular/material/card';
 
 @Component({
   selector: 'app-controller-page',
@@ -39,7 +39,8 @@ import { AlertDialogComponent, DialogData } from '../../shared/components/alert-
     MatOptionModule,    
     MatPaginatorModule,
     MatMenuModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCardModule
   ],
   templateUrl: './controller-page.component.html',
   styleUrl: './controller-page.component.scss'
@@ -47,7 +48,6 @@ import { AlertDialogComponent, DialogData } from '../../shared/components/alert-
 /**
  * TODO:
  * - Add Date column to database
- * - Implement clear all records button
  */
 export class ControllerPageComponent extends BaseComponent implements OnInit {
   @ViewChild('paginator') paginator: MatPaginator
