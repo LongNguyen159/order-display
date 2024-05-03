@@ -18,7 +18,7 @@
     <div class="flex flex-col">
         <div class="processingOrdersHeader flex justify-center items-center text-2xl py-4">Preparing</div>
         <div class="processingOrders pt-4">
-            <div *ngFor="let item of preparingOrders" class="flex flex-col justify-center items-center align-center text-4xl">
+            <div *ngFor="let item of preparingOrders" class="flex flex-col justify-center items-center align-center text-4xl orderItems">
                 {{ item.order_number }}
             </div>
         </div>
@@ -27,12 +27,12 @@
     <!-- ready to pickup -->
     <!-- 'done' is true means ready to pickup -->
     <div class="flex flex-col">
-        <div class="doneOrdersHeader flex justify-center items-center text-2xl py-4 mb-2">Ready to Pickup</div>
-        <div class="flex flex-col h-full justify-evenly doneOrders">
-            <div *ngFor="let item of readyToPickupOrders" class="flex flex-col justify-center items-center align-center text-6xl">
-                {{ item.order_number }}
-            </div>
-        </div>
+      <div class="doneOrdersHeader flex justify-center items-center text-2xl py-4 mb-2">Ready to Pickup</div>
+      <div class="flex flex-col h-full justify-evenly doneOrders">
+          <div *ngFor="let item of readyToPickupOrders" class="orderItems">
+              {{ item.order_number }}
+          </div>
+      </div>
     </div>
   </div> 
 </div>
