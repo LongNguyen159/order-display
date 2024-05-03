@@ -1,5 +1,7 @@
-<!-- TOOLBAR SECTION -->
-<mat-toolbar style="color: rgb(28, 73, 154);">
+<!-- PAGE CONTAINER -->
+<div class="flex flex-col h-full">
+  <!-- TOOLBAR SECTION -->
+  <mat-toolbar style="color: rgb(28, 73, 154);">
     <div class="flex flex-row justify-between w-full">
       <div class="flex flex-row items-center justify-center" (click)="navigateToHome()">
         <button mat-button>
@@ -31,120 +33,120 @@
         </mat-menu>
       </div>
     </div>
-</mat-toolbar>
+  </mat-toolbar>
 
-<div class="px-4 py-2 flex flex-col gap-2 controller-page-container h-full">
+  <!-- CONTENT CONTAINER -->
+  <div class="px-4 py-2 flex flex-col gap-2 controller-page-container h-full overflow-auto">
+    <!-- FORM SECTION -->
+    <div>
+      <mat-card>
+        <mat-card-content>
+          <form (ngSubmit)="onSubmit()" class="flex flex-row justify-center align-center items-center gap-10 py-6">
+            <button class="flex flex-row" mat-raised-button color="primary" type="submit" [disabled]="isOrderNumberEmpty() || isLocationEmpty()">
+              <span>Enter</span>
+              <mat-icon>subdirectory_arrow_right</mat-icon>
+            </button>
+            <mat-form-field>
+              <mat-label>Order Number</mat-label>
+              <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" (keydown.enter)="onEnterOrderNumber()">
+            </mat-form-field>
+      
+            
+            <mat-form-field>
+              <mat-label>Booth</mat-label>
+              <mat-select [(ngModel)]="locationId" name="locationId" required>
+                <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
+                  <div class="flex flex-row items-center justify-between w-full">
+                    {{ location.id }} - {{ location.description }}
+                  </div>
+                </mat-option>
+                <mat-option style="color: rgb(38, 90, 181);" (click)="onCreateLocation()">
+                  <mat-icon>add</mat-icon>
+                  Add new booth
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+      
+            <mat-checkbox [(ngModel)]="done" name="done">Ready to pickup</mat-checkbox>
+          </form>
+        </mat-card-content>
+      </mat-card>
+      
+    </div>
+  
+    <!-- TABLE CONTENT AND METADATA -->
+    <div>
+      <mat-card>
+        <mat-card-header style="display:flex; flex-direction: row; justify-content: space-between;">
+          <mat-card-title>
+            <h2 style="color: rgb(55, 55, 55);">Orders of current booth: {{filteredOrders.length}}</h2>
+          </mat-card-title>
+          <div class="flex flex-row gap-4 items-center mb-4">
+            <mat-form-field>
+              <mat-label>Filter by Booth</mat-label>
+              <mat-select name="locationId" [(ngModel)]="locationIdToFilter" (selectionChange)="filterOrders($event.value)">
+                <mat-option [value]="0">-- None --</mat-option>
+                <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
+                  <div class="flex flex-row items-center justify-between w-full">
+                    {{ location.id }} - {{ location.description }}
+                  </div>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 shadow-none greyBorder">
 
-  <!-- FORM SECTION -->
-  <div>
-    <mat-card>
-      <mat-card-content>
-        <form (ngSubmit)="onSubmit()" class="flex flex-row justify-center align-center items-center gap-10 py-6">
-          <button class="flex flex-row" mat-raised-button color="primary" type="submit" [disabled]="isOrderNumberEmpty() || isLocationEmpty()">
-            <span>Enter</span>
-            <mat-icon>subdirectory_arrow_right</mat-icon>
-          </button>
-          <mat-form-field>
-            <mat-label>Order Number</mat-label>
-            <input matInput type="text" [(ngModel)]="orderNumber" name="orderNumber" (keydown.enter)="onEnterOrderNumber()">
-          </mat-form-field>
-    
+            <!-- Order Number Column -->
+            <ng-container matColumnDef="order_number">
+              <th mat-header-cell *matHeaderCellDef> Order Number </th>
+              <td mat-cell *matCellDef="let order" [style.color]="order.done ? '#f27a00' : 'rgb(70, 70, 70)'" style="font-weight: 500; font-size: x-large;"> {{order.order_number}} </td>
+            </ng-container>
           
-          <mat-form-field>
-            <mat-label>Booth</mat-label>
-            <mat-select [(ngModel)]="locationId" name="locationId" required>
-              <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
-                <div class="flex flex-row items-center justify-between w-full">
-                  {{ location.id }} - {{ location.description }}
-                </div>
-              </mat-option>
-              <mat-option style="color: rgb(38, 90, 181);" (click)="onCreateLocation()">
-                <mat-icon>add</mat-icon>
-                Add new booth
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-    
-          <mat-checkbox [(ngModel)]="done" name="done">Ready to pickup</mat-checkbox>
-        </form>
-      </mat-card-content>
-    </mat-card>
-    
-  </div>
- 
-  <!-- TABLE CONTENT AND METADATA -->
-  <div>
-    <mat-card>
-      <mat-card-header style="display:flex; flex-direction: row; justify-content: space-between;">
-        <mat-card-title>
-          <h2 style="color: rgb(55, 55, 55);">Orders of current booth: {{filteredOrders.length}}</h2>
-        </mat-card-title>
-        <div class="flex flex-row gap-4 items-center mb-4">
-          <mat-form-field>
-            <mat-label>Filter by Booth</mat-label>
-            <mat-select name="locationId" [(ngModel)]="locationIdToFilter" (selectionChange)="filterOrders($event.value)">
-              <mat-option [value]="0">-- None --</mat-option>
-              <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
-                <div class="flex flex-row items-center justify-between w-full">
-                  {{ location.id }} - {{ location.description }}
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 shadow-none greyBorder">
-
-          <!-- Order Number Column -->
-          <ng-container matColumnDef="order_number">
-            <th mat-header-cell *matHeaderCellDef> Order Number </th>
-            <td mat-cell *matCellDef="let order" [style.color]="order.done ? '#f27a00' : 'rgb(70, 70, 70)'" style="font-weight: 500; font-size: x-large;"> {{order.order_number}} </td>
-          </ng-container>
-        
-          <!-- Location ID Column -->
-          <ng-container matColumnDef="location_id">
-            <th mat-header-cell *matHeaderCellDef> Booth </th>
-            <td mat-cell *matCellDef="let order"> {{order.location_description}} </td>
-          </ng-container>
-        
-          <!-- Done Column -->
-          <ng-container matColumnDef="done">
-            <th mat-header-cell *matHeaderCellDef> Ready </th>
-            <td mat-cell *matCellDef="let order">
-              <mat-checkbox
-                [(ngModel)]="order.done"
-                (change)="onDoneChange($event, order)"
-                [value]="order.id"
-                color="primary"
-                [checked]="order.done"
-                [disabled]="updatingDoneStatus">
-              </mat-checkbox>
-            </td>
-          </ng-container>
-        
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Picked up </th>
-            <td mat-cell *matCellDef="let order">
-              <!-- Add your actions here, e.g., edit or delete buttons -->
-              <button mat-icon-button style="color: green;" (click)="onDeleteOrder($event, order)">
-                <mat-icon>done_all</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-        
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-        <mat-paginator
-          #paginator
-          [length]="100"
-          [pageSizeOptions]="[25, 50, 100]"
-        >
-        </mat-paginator>
-      </mat-card-content>
-    </mat-card>
+            <!-- Location ID Column -->
+            <ng-container matColumnDef="location_id">
+              <th mat-header-cell *matHeaderCellDef> Booth </th>
+              <td mat-cell *matCellDef="let order"> {{order.location_description}} </td>
+            </ng-container>
+          
+            <!-- Done Column -->
+            <ng-container matColumnDef="done">
+              <th mat-header-cell *matHeaderCellDef> Ready </th>
+              <td mat-cell *matCellDef="let order">
+                <mat-checkbox
+                  [(ngModel)]="order.done"
+                  (change)="onDoneChange($event, order)"
+                  [value]="order.id"
+                  color="primary"
+                  [checked]="order.done"
+                  [disabled]="updatingDoneStatus">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+          
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Picked up </th>
+              <td mat-cell *matCellDef="let order">
+                <!-- Add your actions here, e.g., edit or delete buttons -->
+                <button mat-icon-button style="color: green;" (click)="onDeleteOrder($event, order)">
+                  <mat-icon>done_all</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator
+            #paginator
+            [length]="100"
+            [pageSizeOptions]="[25, 50, 100]"
+          >
+          </mat-paginator>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>
-
