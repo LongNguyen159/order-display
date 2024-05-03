@@ -193,7 +193,7 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     event.stopPropagation()
     const dialogData: DialogData = {
       title: 'Are you sure you want to delete all records?',
-      message: `This will clear all data from the database from all sections. Action cannot be undone.`,
+      message: `This will clear all data from the database from all booths. Action cannot be undone.`,
       confirmLabel: 'Delete',
       cancelLabel: 'Cancel',
       confirmButtonColor: 'warn'
@@ -270,10 +270,10 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
         this.sharedService.createLocation(locationInput).pipe(take(1)).subscribe({
           next: (value: any) => {
             this.updateDatasource()
-            this.sharedService.openSnackbar('New section added!')
+            this.sharedService.openSnackbar('New booth added!')
           },
           error: (err: HttpErrorResponse) => {
-            this.sharedService.openSnackbar('Error adding section, please try again')
+            this.sharedService.openSnackbar('Error adding booth, please try again')
           }
         })
       } else {
@@ -288,10 +288,10 @@ export class ControllerPageComponent extends BaseComponent implements OnInit {
     this.sharedService.removeLocation(locationId).pipe(take(1)).subscribe({
       next: (value: any) => {
         this.updateDatasource()
-        this.sharedService.openSnackbar('Section removed from database!')
+        this.sharedService.openSnackbar('Booth removed from database!')
       },
       error: (err: HttpErrorResponse) => {
-        this.sharedService.openSnackbar('Error removing section, please try again')
+        this.sharedService.openSnackbar('Error removing booth, please try again')
       }
     })
   }

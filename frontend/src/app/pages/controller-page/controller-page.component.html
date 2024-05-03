@@ -16,7 +16,7 @@
         </button>
         <mat-menu #menu="matMenu">
           <div class="flex flex-row align-center p-4">
-            <h3 style="margin: 0; font-weight: 500; color: rgb(95, 95, 95);">Default Section:</h3>
+            <h3 style="margin: 0; font-weight: 500; color: rgb(95, 95, 95);">Default Booth:</h3>
             <mat-form-field (click)="$event.stopPropagation()">
               
               <mat-select [(ngModel)]="defaultLocationId" (selectionChange)="onDefaultLocationSelect($event)" name="locationId" required>
@@ -49,7 +49,7 @@
 
       
       <mat-form-field>
-        <mat-label>Sections</mat-label>
+        <mat-label>Booth</mat-label>
         <mat-select [(ngModel)]="locationId" name="locationId" required>
           <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
             <div class="flex flex-row items-center justify-between w-full">
@@ -58,7 +58,7 @@
           </mat-option>
           <mat-option style="color: rgb(38, 90, 181);" (click)="onCreateLocation()">
             <mat-icon>add</mat-icon>
-            Add new section
+            Add new booth
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -71,12 +71,12 @@
     <!-- METADATA & FILTERING SECTION -->
     <div class="flex flex-row justify-between items-center">
       <div class="flex flex-col align-start">
-        <!-- <h2 style="color: rgb(50, 50, 50);">Orders (All sections): {{allOrders.length}}</h2> -->
-        <h2 style="color: rgb(55, 55, 55);">Orders of current section: {{filteredOrders.length}}</h2>
+        <!-- <h2 style="color: rgb(50, 50, 50);">Orders (All booths): {{allOrders.length}}</h2> -->
+        <h2 style="color: rgb(55, 55, 55);">Orders of current booth: {{filteredOrders.length}}</h2>
       </div>
       <div class="flex flex-row gap-4 items-center mb-4">
         <mat-form-field>
-          <mat-label>Filter by Section</mat-label>
+          <mat-label>Filter by Booth</mat-label>
           <mat-select name="locationId" [(ngModel)]="locationIdToFilter" (selectionChange)="filterOrders($event.value)">
             <mat-option [value]="0">-- None --</mat-option>
             <mat-option *ngFor="let location of locations" [value]="location.id" style="display: flex; justify-content: space-between; width: 100%;">
@@ -100,7 +100,7 @@
       
         <!-- Location ID Column -->
         <ng-container matColumnDef="location_id">
-          <th mat-header-cell *matHeaderCellDef> Section </th>
+          <th mat-header-cell *matHeaderCellDef> Booth </th>
           <td mat-cell *matCellDef="let order"> {{order.location_description}} </td>
         </ng-container>
       
